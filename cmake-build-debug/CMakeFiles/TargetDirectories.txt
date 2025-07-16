@@ -1,0 +1,3 @@
+D:/proj/tinyLang/cmake-build-debug/CMakeFiles/tinyLang.dir
+D:/proj/tinyLang/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/proj/tinyLang/cmake-build-debug/CMakeFiles/rebuild_cache.dir
