@@ -1,9 +1,7 @@
-define abc(i)
-define bb(i)
-eq bb,6
-eq abc,7
-print abc
-print bb
-define result(i)
-add bb,abc,bb
-print bb
+define a(i)
+define b(i)
+eq a,4
+eq b,3
+mul a,b,6
+print a
+print b

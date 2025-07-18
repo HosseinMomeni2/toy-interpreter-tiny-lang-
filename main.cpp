@@ -283,22 +283,166 @@ public:
             }
             case 5: ///sub
             {
-                std::cout << "Nothing to do" << std::endl;
+                if(params_type[0] != 'v') return -15; ///equation error
+
+                char operation_type = params_type[1];
+                if(operation_type == 'v')
+                {
+                    operation_type = variables[params_int[1]].type;
+                }
+
+
+                if(operation_type == 'i')
+                {
+                    int operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_int;
+                    else if(params_type[1] == 'i') operand1 = params_int[1];
+                    else if(params_type[1] == 'c') operand1 = int((unsigned char)params_char[1]);
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_int;
+                    else if(params_type[2] == 'i') operand2 = params_int[2];
+                    else if(params_type[2] == 'c') operand2 = int((unsigned char)params_char[2]);
+
+                    variables[params_int[0]].val_int = operand1 - operand2;
+                }
+                else if(operation_type == 'c')
+                {
+                    char operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_chr;
+                    else if(params_type[1] == 'i') operand1 = (char)params_int[1];
+                    else if(params_type[1] == 'c') operand1 = params_char[1];
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_chr;
+                    else if(params_type[2] == 'i') operand2 = (char)params_int[2];
+                    else if(params_type[2] == 'c') operand2 = params_char[2];
+
+                    variables[params_int[0]].val_chr = operand1 - operand2;
+                }
                 break;
             }
             case 6: ///mul
             {
-                std::cout << "Nothing to do" << std::endl;
+                if(params_type[0] != 'v') return -15; ///equation error
+
+                char operation_type = params_type[1];
+                if(operation_type == 'v')
+                {
+                    operation_type = variables[params_int[1]].type;
+                }
+
+
+                if(operation_type == 'i')
+                {
+                    int operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_int;
+                    else if(params_type[1] == 'i') operand1 = params_int[1];
+                    else if(params_type[1] == 'c') operand1 = int((unsigned char)params_char[1]);
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_int;
+                    else if(params_type[2] == 'i') operand2 = params_int[2];
+                    else if(params_type[2] == 'c') operand2 = int((unsigned char)params_char[2]);
+
+                    variables[params_int[0]].val_int = operand1 * operand2;
+                }
+                else if(operation_type == 'c')
+                {
+                    char operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_chr;
+                    else if(params_type[1] == 'i') operand1 = (char)params_int[1];
+                    else if(params_type[1] == 'c') operand1 = params_char[1];
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_chr;
+                    else if(params_type[2] == 'i') operand2 = (char)params_int[2];
+                    else if(params_type[2] == 'c') operand2 = params_char[2];
+
+                    variables[params_int[0]].val_chr = operand1 * operand2;
+                }
                 break;
             }
             case 7: ///div
             {
-                std::cout << "Nothing to do" << std::endl;
+                if(params_type[0] != 'v') return -15; ///equation error
+
+                char operation_type = params_type[1];
+                if(operation_type == 'v')
+                {
+                    operation_type = variables[params_int[1]].type;
+                }
+
+
+                if(operation_type == 'i')
+                {
+                    int operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_int;
+                    else if(params_type[1] == 'i') operand1 = params_int[1];
+                    else if(params_type[1] == 'c') operand1 = int((unsigned char)params_char[1]);
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_int;
+                    else if(params_type[2] == 'i') operand2 = params_int[2];
+                    else if(params_type[2] == 'c') operand2 = int((unsigned char)params_char[2]);
+
+                    variables[params_int[0]].val_int = operand1 / operand2;
+                }
+                else if(operation_type == 'c')
+                {
+                    char operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_chr;
+                    else if(params_type[1] == 'i') operand1 = (char)params_int[1];
+                    else if(params_type[1] == 'c') operand1 = params_char[1];
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_chr;
+                    else if(params_type[2] == 'i') operand2 = (char)params_int[2];
+                    else if(params_type[2] == 'c') operand2 = params_char[2];
+
+                    variables[params_int[0]].val_chr = operand1 / operand2;
+                }
                 break;
             }
             case 8: ///mod
             {
-                std::cout << "Nothing to do" << std::endl;
+                if(params_type[0] != 'v') return -15; ///equation error
+
+                char operation_type = params_type[1];
+                if(operation_type == 'v')
+                {
+                    operation_type = variables[params_int[1]].type;
+                }
+
+
+                if(operation_type == 'i')
+                {
+                    int operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_int;
+                    else if(params_type[1] == 'i') operand1 = params_int[1];
+                    else if(params_type[1] == 'c') operand1 = int((unsigned char)params_char[1]);
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_int;
+                    else if(params_type[2] == 'i') operand2 = params_int[2];
+                    else if(params_type[2] == 'c') operand2 = int((unsigned char)params_char[2]);
+
+                    variables[params_int[0]].val_int = operand1 % operand2;
+                }
+                else if(operation_type == 'c')
+                {
+                    char operand1=1, operand2=1;
+
+                    if(params_type[1] == 'v') operand1 = variables[params_int[1]].val_chr;
+                    else if(params_type[1] == 'i') operand1 = (char)params_int[1];
+                    else if(params_type[1] == 'c') operand1 = params_char[1];
+
+                    if(params_type[2] == 'v') operand2 = variables[params_int[2]].val_chr;
+                    else if(params_type[2] == 'i') operand2 = (char)params_int[2];
+                    else if(params_type[2] == 'c') operand2 = params_char[2];
+
+                    variables[params_int[0]].val_chr = operand1 % operand2;
+                }
                 break;
             }
             case 9: ///eq
