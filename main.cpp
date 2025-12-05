@@ -1,6 +1,7 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <map>
 #include <fstream>
 
 class Variable
@@ -13,9 +14,30 @@ class Variable
     friend class Command;
 };
 
-const std::vector<std::string> valid_words = {"LABEL", "define", "read", "print", "add", "sub", "mul", "div", "mod", "eq"};
+///a list of all key words
+const std::vector<std::string> valid_words = {"LABEL",
+                                              "define",
+                                              "read",
+                                              "print",
+                                              "add",
+                                              "sub",
+                                              "mul",
+                                              "div",
+                                              "mod",
+                                              "eq",
+                                              "jump"};
+
+///it is needed to save all the defined labels and variables
 std::vector<std::pair<std::string, int>> labels;
 std::vector<Variable> variables;
+
+///a map of errors with they're codes
+std::map<int, std::string> errors = {{-100, "too long line"},
+                                     {-1, "invalid word"},
+                                     {-2, "unknown word"}};
+
+///jump should be performed in the main
+int jump_control = -1;
 
 class Command
 {
@@ -40,36 +62,66 @@ public:
             return;
         }
 
+        ///add an extra comma and set the line
         L.push_back(',');
-
-
         line = std::move(L);
+
+        ///validate and if invalid, set the isValid variable to validation result
         int validation_result = check_for_syntax_error();
         if(validation_result < 0){
             isValid = validation_result;
             return;
         }
 
+        ///if the code reaches here the line has a valid syntax
+        ///the result of validation is the main word of the line
         isValid = 1;
         main_word = valid_words[validation_result];
         main_word_code = validation_result;
 
-        if(main_word_code == 0) //Label or define
-        {
-            set_label_name();
-        }
-        else if(main_word_code == 1) {
-            set_label_name();
-            set_define_type();
-        }
-        else {
-            set_params();
+        switch (main_word_code) {
+            case 0: ///if the main word is "LABEL"
+            {
+                set_label_name();
+                break;
+            }
+
+            case 1: ///if the main word is "define"
+            {
+                set_label_name(); ///in the definition of a variable, the name is considered as label name
+                set_define_type();
+                break;
+            }
+
+            case 10: ///if the main word is "jump"
+            {
+                set_label_name();
+                break;
+            }
+
+            default: ///if the line is an operation
+            {
+                validation_result = set_params();
+                if(validation_result < 0) isValid = validation_result;
+            }
         }
 
+//        if(main_word_code == 0) //Label or define
+//        {
+//            set_label_name();
+//        }
+//        else if(main_word_code == 1) {
+//            set_label_name();
+//            set_define_type();
+//        }
+//        else {
+//            set_params();
+//        }
     }
 
     int check_for_syntax_error()
     {
+        ///extract the main word (which is the first word of the line)
         std::string word;
         for(auto itr : line){
             if(itr == ' ') break;
@@ -77,6 +129,7 @@ public:
             if(word.size() > 10) return -1; ///invalid word
         }
 
+        ///search for the main word
         for(int i=0; i<valid_words.size(); i++)
             if(valid_words[i] == word) return i;
 
@@ -92,18 +145,22 @@ public:
         {
             if(line[i] == ' ') return -3; ///syntax error
 
+            ///a comma means that the parameter is over
             if(line[i] == ',')
             {
                 if(tmp_param.empty()) return -3; ///syntax error
 
-                else if(isdigit(tmp_param[0])) // if it is a number
+                /// if it is a number
+                else if(isdigit(tmp_param[0]))
                 {
+                    ///check if it is a number or just an error
                     for(auto x : tmp_param)
                     {
                         if(!isdigit(x))
                             return -4; ///invalid variable name
                     }
 
+                    ///convert the string to number
                     int tmp_param_int = tmp_param[0] - '0';
                     for(int ind=1; ind<tmp_param.size(); ind++)
                     {
@@ -111,22 +168,27 @@ public:
                         tmp_param_int += tmp_param[i] - '0';
                     }
 
+                    ///set the parameter
                     params_type[param_index] = 'i';
                     params_int[param_index++] = tmp_param_int;
                 }
 
-                else if(tmp_param[0] == '\'') //if it is a char
+                ///if it is a char
+                else if(tmp_param[0] == '\'')
                 {
+                    ///check if it is a char or just an error
                     if(tmp_param.size() != 3) return -4; ///invalid variable name
-
                     if(tmp_param[2] != '\'') return -4;  ///invalid variable name
 
+                    ///set the parameter
                     params_type[param_index] = 'c';
                     params_char[param_index++] = tmp_param[1];
                 }
 
-                else //it is a variable
+                ///it is a variable
+                else
                 {
+                    ///find the variable
                     int variable_index = -1;
                     for(int ind=0; ind<variables.size(); ind++)
                     {
@@ -136,8 +198,9 @@ public:
                             break;
                         }
                     }
-                    if(variable_index == -1) return -5; ///variable is not initialized
+                    if(variable_index == -1) return -5; ///undefined variable or label
 
+                    ///set the parameter
                     params_type[param_index] = 'v';
                     params_int[param_index++] = variable_index;
                 }
@@ -151,16 +214,24 @@ public:
             }
         }
 
-        return 1;
+        ///return the number of parameters
+        return param_index;
     }
 
     void set_label_name()
     {
         std::string l_name;
         for(int i=(int)main_word.size()+1; i<line.size()-1; i++)
+        {
             l_name.push_back(line[i]);
+        }
 
         label_name = l_name;
+    }
+
+    std::string get_label_name()
+    {
+        return label_name;
     }
 
     void set_define_type()
@@ -206,7 +277,7 @@ public:
                         break;
                     }
 
-                if(exist) return -12; ///variabla exists
+                if(exist) return -12; ///variable exists
 
                 Variable v;
                 v.name = label_name;
@@ -476,6 +547,23 @@ public:
 
                 break;
             }
+
+            case 10: ///jump
+            {
+                bool exist = false;
+                for(auto itr : labels)
+                {
+                    if(itr.first == label_name)
+                    {
+                        exist = true;
+                        jump_control = itr.second + 1;
+                        break;
+                    }
+                }
+
+                if(!exist)
+                    return -5; ///undefined variable of label
+            }
         }
 
         return 1;
@@ -493,10 +581,15 @@ int main() {
     int line_number = 1;
     while(std::getline(tLang_file, one_line))
     {
+//        std::cout << line_number << std::endl;
+//        std::cout << "LABELs: ";
+//        for(auto x : labels) std::cout << '(' << x.first << ',' << x.second << ") "; std::cout << std::endl;
+
         Command c(one_line, line_number);
         if(c.is_a_label())
         {
-            std::cout << "A label" << std::endl;
+            labels.emplace_back(c.get_label_name(), line_number);
+//            std::cout << "A label" << std::endl;
         }
         else
         {
@@ -505,7 +598,23 @@ int main() {
             if(run < 0)
             {
                 std::cout << "error " << run << " happened in line "  << line_number << std::endl;
+                std::cout << errors[run] << std::endl;
                 break;
+            }
+
+            ///check for jump
+            if(jump_control > 0)
+            {
+                std::string temp;
+                tLang_file.clear();
+                tLang_file.seekg(0, std::ios::beg);
+                line_number = 1;
+                while(line_number <= jump_control)
+                {
+                    std::getline(tLang_file, temp);
+                    line_number ++;
+                }
+                jump_control = -1;
             }
         }
 

@@ -1,7 +1,9 @@
 define a(i)
 define b(i)
-eq a,4
-eq b,3
-mul a,b,6
+LABEL lab
+eq a,1
+eq b,6
+mul a,a,2
 print a
+jump lab
 print b
