@@ -105,18 +105,6 @@ public:
                 if(validation_result < 0) isValid = validation_result;
             }
         }
-
-//        if(main_word_code == 0) //Label or define
-//        {
-//            set_label_name();
-//        }
-//        else if(main_word_code == 1) {
-//            set_label_name();
-//            set_define_type();
-//        }
-//        else {
-//            set_params();
-//        }
     }
 
     int check_for_syntax_error()
@@ -581,15 +569,10 @@ int main() {
     int line_number = 1;
     while(std::getline(tLang_file, one_line))
     {
-//        std::cout << line_number << std::endl;
-//        std::cout << "LABELs: ";
-//        for(auto x : labels) std::cout << '(' << x.first << ',' << x.second << ") "; std::cout << std::endl;
-
         Command c(one_line, line_number);
         if(c.is_a_label())
         {
             labels.emplace_back(c.get_label_name(), line_number);
-//            std::cout << "A label" << std::endl;
         }
         else
         {
